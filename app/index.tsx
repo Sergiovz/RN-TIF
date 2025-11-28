@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Link, useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { FlatList, Image, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../constants/theme';
 import { Note, NoteService } from '../services/NoteService';
 
@@ -47,7 +48,7 @@ export default function HomeScreen() {
     );
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
             <FlatList
                 data={notes}
                 renderItem={renderItem}
@@ -75,7 +76,7 @@ export default function HomeScreen() {
             >
                 <Ionicons name="add" size={28} color="#fff" />
             </TouchableOpacity>
-        </View>
+        </SafeAreaView>
     );
 }
 

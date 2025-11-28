@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '../../constants/theme';
 import { Note, NoteService } from '../../services/NoteService';
 
@@ -11,6 +12,7 @@ export default function NoteDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const [note, setNote] = useState<Note | null>(null);
     const router = useRouter();
+    const insets = useSafeAreaInsets();
 
     useEffect(() => {
         loadNote();
@@ -50,7 +52,7 @@ export default function NoteDetailScreen() {
     if (!note) return <View style={styles.loadingContainer} />;
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['bottom']}>
             <Stack.Screen options={{ headerShown: false }} />
 
             <ScrollView
@@ -67,7 +69,7 @@ export default function NoteDetailScreen() {
                     <View style={styles.imageOverlay} />
 
                     <TouchableOpacity
-                        style={styles.backButton}
+                        style={[styles.backButton, { top: insets.top + 8 }]}
                         onPress={() => router.back()}
                         activeOpacity={0.7}
                     >
@@ -125,7 +127,7 @@ export default function NoteDetailScreen() {
                     <Text style={styles.editButtonText}>Editar</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 

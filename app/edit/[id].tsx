@@ -3,6 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../../constants/theme';
 import { Note, NoteService } from '../../services/NoteService';
 
@@ -98,56 +99,62 @@ export default function EditScreen() {
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            {imageUri && (
-                <View style={styles.imagePreview}>
-                    <Image source={{ uri: imageUri }} style={styles.previewImage} />
-                    <View style={styles.imageActions}>
-                        <TouchableOpacity style={styles.imageActionBtn} onPress={takePhoto}>
-                            <Ionicons name="camera" size={20} color="#fff" />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.imageActionBtn} onPress={pickImage}>
-                            <Ionicons name="images" size={20} color="#fff" />
-                        </TouchableOpacity>
+        <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+            <ScrollView contentContainerStyle={styles.container}>
+                {imageUri && (
+                    <View style={styles.imagePreview}>
+                        <Image source={{ uri: imageUri }} style={styles.previewImage} />
+                        <View style={styles.imageActions}>
+                            <TouchableOpacity style={styles.imageActionBtn} onPress={takePhoto}>
+                                <Ionicons name="camera" size={20} color="#fff" />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.imageActionBtn} onPress={pickImage}>
+                                <Ionicons name="images" size={20} color="#fff" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
-            )}
+                )}
 
-            <View style={styles.form}>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Título</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={title}
-                        onChangeText={setTitle}
-                        placeholder="Título de la nota"
-                        placeholderTextColor={Colors.light.textSecondary}
-                    />
-                </View>
+                <View style={styles.form}>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.label}>Título</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={title}
+                            onChangeText={setTitle}
+                            placeholder="Título de la nota"
+                            placeholderTextColor={Colors.light.textSecondary}
+                        />
+                    </View>
 
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Descripción</Text>
-                    <TextInput
-                        style={[styles.input, styles.textArea]}
-                        value={description}
-                        onChangeText={setDescription}
-                        placeholder="Descripción de la nota"
-                        placeholderTextColor={Colors.light.textSecondary}
-                        multiline
-                        textAlignVertical="top"
-                    />
-                </View>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.label}>Descripción</Text>
+                        <TextInput
+                            style={[styles.input, styles.textArea]}
+                            value={description}
+                            onChangeText={setDescription}
+                            placeholder="Descripción de la nota"
+                            placeholderTextColor={Colors.light.textSecondary}
+                            multiline
+                            textAlignVertical="top"
+                        />
+                    </View>
 
-                <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                    <Ionicons name="checkmark-circle" size={24} color="#fff" />
-                    <Text style={styles.saveButtonText}>Guardar Cambios</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+                    <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                        <Ionicons name="checkmark-circle" size={24} color="#fff" />
+                        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: Colors.light.background,
+    },
     container: {
         flexGrow: 1,
         backgroundColor: Colors.light.background,

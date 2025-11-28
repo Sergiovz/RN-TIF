@@ -3,6 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../constants/theme';
 import { NoteService } from '../services/NoteService';
 
@@ -66,97 +67,103 @@ export default function CreateScreen() {
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-            {!imageUri ? (
-                <View style={styles.imageSelector}>
-                    <View style={styles.imagePlaceholder}>
-                        <Ionicons name="image-outline" size={56} color={Colors.light.textSecondary} />
-                        <Text style={styles.placeholderText}>Selecciona una foto</Text>
-                        <Text style={styles.placeholderSubtext}>para tu recuerdo</Text>
+        <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+            <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+                {!imageUri ? (
+                    <View style={styles.imageSelector}>
+                        <View style={styles.imagePlaceholder}>
+                            <Ionicons name="image-outline" size={56} color={Colors.light.textSecondary} />
+                            <Text style={styles.placeholderText}>Selecciona una foto</Text>
+                            <Text style={styles.placeholderSubtext}>para tu recuerdo</Text>
+                        </View>
+                        <View style={styles.buttonRow}>
+                            <TouchableOpacity
+                                style={styles.imageButton}
+                                onPress={takePhoto}
+                                activeOpacity={0.7}
+                            >
+                                <Ionicons name="camera" size={24} color={Colors.light.primary} />
+                                <Text style={styles.buttonText}>Cámara</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.imageButton}
+                                onPress={pickImage}
+                                activeOpacity={0.7}
+                            >
+                                <Ionicons name="images" size={24} color={Colors.light.secondary} />
+                                <Text style={styles.buttonText}>Galería</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <View style={styles.buttonRow}>
-                        <TouchableOpacity
-                            style={styles.imageButton}
-                            onPress={takePhoto}
-                            activeOpacity={0.7}
-                        >
-                            <Ionicons name="camera" size={24} color={Colors.light.primary} />
-                            <Text style={styles.buttonText}>Cámara</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.imageButton}
-                            onPress={pickImage}
-                            activeOpacity={0.7}
-                        >
-                            <Ionicons name="images" size={24} color={Colors.light.secondary} />
-                            <Text style={styles.buttonText}>Galería</Text>
-                        </TouchableOpacity>
+                ) : (
+                    <View style={styles.imagePreviewContainer}>
+                        <View style={styles.imagePreview}>
+                            <Image
+                                source={{ uri: imageUri }}
+                                style={styles.previewImage}
+                                resizeMode="cover"
+                            />
+                            <View style={styles.imageOverlay} />
+                            <TouchableOpacity
+                                style={styles.changeImageBtn}
+                                onPress={() => setImageUri(null)}
+                                activeOpacity={0.8}
+                            >
+                                <Ionicons name="sync" size={18} color="#fff" />
+                                <Text style={styles.changeImageText}>Cambiar foto</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.imageBadge}>
+                            <Ionicons name="checkmark-circle" size={16} color={Colors.light.success} />
+                            <Text style={styles.imageBadgeText}>Foto seleccionada</Text>
+                        </View>
                     </View>
-                </View>
-            ) : (
-                <View style={styles.imagePreviewContainer}>
-                    <View style={styles.imagePreview}>
-                        <Image
-                            source={{ uri: imageUri }}
-                            style={styles.previewImage}
-                            resizeMode="cover"
+                )}
+
+                <View style={styles.form}>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.label}>Título</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={title}
+                            onChangeText={setTitle}
+                            placeholder="Dale un título a tu recuerdo"
+                            placeholderTextColor={Colors.light.textSecondary}
                         />
-                        <View style={styles.imageOverlay} />
-                        <TouchableOpacity
-                            style={styles.changeImageBtn}
-                            onPress={() => setImageUri(null)}
-                            activeOpacity={0.8}
-                        >
-                            <Ionicons name="sync" size={18} color="#fff" />
-                            <Text style={styles.changeImageText}>Cambiar foto</Text>
-                        </TouchableOpacity>
                     </View>
-                    <View style={styles.imageBadge}>
-                        <Ionicons name="checkmark-circle" size={16} color={Colors.light.success} />
-                        <Text style={styles.imageBadgeText}>Foto seleccionada</Text>
+
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.label}>Descripción</Text>
+                        <TextInput
+                            style={[styles.input, styles.textArea]}
+                            value={description}
+                            onChangeText={setDescription}
+                            placeholder="Cuéntanos sobre este momento..."
+                            placeholderTextColor={Colors.light.textSecondary}
+                            multiline
+                            textAlignVertical="top"
+                        />
                     </View>
-                </View>
-            )}
 
-            <View style={styles.form}>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Título</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={title}
-                        onChangeText={setTitle}
-                        placeholder="Dale un título a tu recuerdo"
-                        placeholderTextColor={Colors.light.textSecondary}
-                    />
+                    <TouchableOpacity
+                        style={styles.saveButton}
+                        onPress={handleSave}
+                        activeOpacity={0.8}
+                    >
+                        <Ionicons name="checkmark-circle" size={24} color="#fff" />
+                        <Text style={styles.saveButtonText}>Guardar Nota</Text>
+                    </TouchableOpacity>
                 </View>
-
-                <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Descripción</Text>
-                    <TextInput
-                        style={[styles.input, styles.textArea]}
-                        value={description}
-                        onChangeText={setDescription}
-                        placeholder="Cuéntanos sobre este momento..."
-                        placeholderTextColor={Colors.light.textSecondary}
-                        multiline
-                        textAlignVertical="top"
-                    />
-                </View>
-
-                <TouchableOpacity
-                    style={styles.saveButton}
-                    onPress={handleSave}
-                    activeOpacity={0.8}
-                >
-                    <Ionicons name="checkmark-circle" size={24} color="#fff" />
-                    <Text style={styles.saveButtonText}>Guardar Nota</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: Colors.light.background,
+    },
     container: {
         flexGrow: 1,
         backgroundColor: Colors.light.background,

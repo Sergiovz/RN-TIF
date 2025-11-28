@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Colors } from '../constants/theme';
 
 export const unstable_settings = {
@@ -8,7 +9,7 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   return (
-    <>
+    <SafeAreaProvider>
       <Stack
         screenOptions={{
           headerStyle: {
@@ -54,6 +55,6 @@ export default function RootLayout() {
         />
       </Stack>
       <StatusBar style="light" />
-    </>
+    </SafeAreaProvider>
   );
 }
